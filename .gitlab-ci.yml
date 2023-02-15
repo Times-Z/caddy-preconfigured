@@ -1,0 +1,13 @@
+# Etapes du CI/CD
+stages:
+  - build
+
+build:docker:
+    stage: build
+    image: docker:stable
+    script:
+      - docker build -t "$CI_REGISTRY_IMAGE:stable" .
+      - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+      - docker push "$CI_REGISTRY_IMAGE:stable"
+    only:
+      - main
