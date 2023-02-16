@@ -1,6 +1,6 @@
 # Caddy 2 "1 min" setup
 
-[![Docker Image CI](https://github.com/Times-Z/caddy-preconfigured/actions/workflows/docker-image.yml/badge.svg)](https://github.com/Times-Z/caddy-preconfigured/actions/workflows/docker-image.yml)
+[![Build and Publish](https://github.com/Times-Z/caddy-preconfigured/actions/workflows/docker-image.yml/badge.svg)](https://github.com/Times-Z/caddy-preconfigured/actions/workflows/docker-image.yml)
 
 This repository is docker container of [caddy](https://caddyserver.com/) including :
 - Ovh dns provider module
