@@ -1,6 +1,8 @@
-# Etapes du CI/CD
 stages:
   - build
+  - container quality
+  - container security
+  - github
 
 build:docker:
     stage: build
@@ -11,3 +13,51 @@ build:docker:
       - docker push "$CI_REGISTRY_IMAGE:stable"
     only:
       - main
+
+qa:hadolint:
+  stage: container quality
+  image: hadolint/hadolint:latest-debian
+  script: hadolint Dockerfile
+
+qa:trivy:
+  stage: container security
+  image:
+    name: docker.io/aquasec/trivy:latest
+    entrypoint: [""]
+  variables:
+    GIT_STRATEGY: none
+    TRIVY_USERNAME: "$CI_REGISTRY_USER"
+    TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
+    TRIVY_AUTH_URL: "$CI_REGISTRY"
+    TRIVY_NO_PROGRESS: "true"
+    TRIVY_CACHE_DIR: ".trivycache/"
+  script:
+    - trivy image --clear-cache
+    - trivy image --download-db-only
+    - trivy image --exit-code 1 --severity CRITICAL "$CI_REGISTRY_IMAGE:stable"
+  cache:
+    paths:
+      - .trivycache/
+
+deploy:github:
+  stage: github
+  image: debian:10
+  before_script:
+    - apt-get update && apt-get install git ssh -y
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - mkdir -p  ~/.ssh
+  script:
+    - |
+      echo ${GITHUB_SSH_PRIVATE} | base64 -d > ~/.ssh/id_rsa
+      echo ${GITHUB_SSH_PUBLIC} | base64 -d > ~/.ssh/id_rsa.pub
+      chmod 600 -R ~/.ssh
+      eval $(ssh-agent -s)
+      ssh-add ~/.ssh/id_rsa
+      ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      if [ "$(git remote show | grep publicGithub)" == "" ] ; then
+        git remote add publicGithub git@github.com:Times-Z/caddy-preconfigured.git
+      fi
+      git push -u publicGithub HEAD:main
+  only:
+    - main
+  when: manual

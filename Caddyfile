@@ -20,6 +20,25 @@
 	}
 }
 
+(tls-azure) {
+	tls {
+		dns azure {
+			tenant_id {$AZURE_TENANT_ID}
+			client_id {$AZURE_CLIENT_ID}
+			client_secret {$AZURE_CLIENT_SECRET}
+			subscription_id {$AZURE_SUBSCRIPTION_ID}
+			resource_group_name {$AZURE_RESOURCE_GROUP_NAME}
+		}
+	}
+}
+
+(tls-cloudflare) {
+	tls {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+		resolvers 1.1.1.1
+	}
+}
+
 (reverse-proxy) {
 	reverse_proxy {$BACKEND_ENDPOINT:nginx:80}
 }
