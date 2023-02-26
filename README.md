@@ -10,7 +10,7 @@ This repository is docker container of [caddy](https://caddyserver.com/) includi
 
 This is the fastest way to provide https protocol in your application ! 🚀✨
 
-## Configuration
+## [Configuration](#configuration)
 This docker image is configuratble by env vars
 
 Availaible vars :
@@ -23,13 +23,61 @@ Availaible vars :
 
         This is your domain name such as `foo.bar.domain`
 
+    - `DOMAIN_PORT` :
+
+        Default value is `443`
+
+        Listening port for your domain configuration
+
     - `CADDY_MODE` : 
 
         Default value is `reverse-proxy`
 
         This is the default snippet used for configuration
 
-        Possible value : `reverse-proxy`, `php-fpm`
+        Possible value : `reverse-proxy`, `php-fpm`, `html` or `false` (to disable)
+
+    - `CADDY_DOMAIN_EXTRA_CONFIG` :
+
+        Default value is `nul`
+
+        Give caddy custom extra config for domain scope
+
+        Example :
+
+        ```sh
+          header x-domain-from "{env.DOMAIN}"
+        ```
+
+        Note: Use the syntaxe {env.XXX} instead of {$XXX} to use environnement variable for this block
+
+        You can use snippet that is defined in CaddyFile (view [Snippet section](#defined-snippet))
+
+    - `CADDY_GLOBAL_EXTRA_CONFIG` :
+
+        Default value is `null`
+
+        Give caddy custom extra global configuration such as
+
+        ```sh
+        localhost:80 {
+          respond "Hello, world!"
+        }
+        ```
+
+        Note: Use the syntaxe {env.XXX} instead of {$XXX} to use environnement variable for this block
+
+        Tips: to provide multiline value for a env var in a docker-compose.yml use "`|`" like
+        ```yml
+          CADDY_DOMAIN_EXTRA_CONFIG: |
+            localhost:80 {
+              respond "Hello, world!"
+            }
+        ```
+
+        Dot not use the `>` because he not add \n at the end of each line it cause some issues in many case
+
+        You can use snippet that is defined in CaddyFile (view [Snippet section](#defined-snippet))
 
     - `TLS_PROVIDER` :
 
@@ -37,7 +85,19 @@ Availaible vars :
 
         The is your tls provider
 
-        Possible value : `tls-ovh`, `tls-azure`, `tls-cloudflare`
+        Possible value : `tls-ovh`, `tls-azure`, `tls-cloudflare` or `false` (to disable)
+
+    - `WHITELIST_IPS` :
+
+      Default value is `0.0.0.0/0` (all ip and ip scope is allowed)
+
+      Provide a list of ip or ip range to whitelist
+
+      Give 403 return response for all request that is not in scope
+
+      You can provide ip like `127.0.0.1` or scope like `127.0.0.0/24`
+
+      You need to sperate each by space such as example `127.0.0.1 10.0.0.0/24`
 
 - Caddy reverse-proxy specific :
     - `BACKEND_ENDPOINT` :
@@ -45,6 +105,13 @@ Availaible vars :
         Default value is `nginx:80`
 
         This is your endpoint to which requests are forwarded such as `http://foo.bar:8000` or `wordpress:80`
+
+- Caddy reverse-proxy specific :
+    - `WEBROOT` :
+
+        Default value is `/var/www/html`
+
+        Set the default web root for the web server
 
 - Caddy php-fpm specific :
     - `WEBROOT` :
@@ -75,9 +142,9 @@ Availaible vars :
         - `CLOUDFLARE_API_TOKEN`
 
 
-## Examples
+## [Examples](#Examples)
 
-This is an example to provide TLS for qbittorrent web application using reverse-proxy configuration
+This is an example to provide TLS for qbittorrent web application using reverse-proxy configuration with ip range or specific ip white list
 
 ```yml
 version: "3.8"
@@ -103,6 +170,7 @@ services:
       OVH_APPLICATION_SECRET: "my ovh application secret"
       OVH_CONSUMER_KEY: "my ovh consumer key"
       BACKEND_ENDPOINT: "qbittorrent:8080"
+      WHITELIST_IPS: 192.168.1.0/24 172.18.0.0/24 10.0.1.21
     volumes:
       - caddy_data:/data
     networks:
@@ -157,3 +225,13 @@ volumes:
   caddy_data:
   application_root:
 ```
+
+## [Defined snippets](#defined-snippet)
+
+- `tls-ovh` : use [caddy-dns/ovh](https://github.com/caddy-dns/ovh) plugin to provide TLS
+- `tls-cloudflare` : use [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare) plugin to provide TLS
+- `tls-azure` : use [caddy-dns/azure](https://github.com/caddy-dns/azure) plugin to provide TLS
+- `reverse-proxy` : use [reverse_proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy) directive to provide a simple reverse proxy to a backend wich defined with `BACKEND_ENDPOINT` environnement variable (see [configuration](#configuration))
+- `php-fpm` : provide a default configuration for php (see [configuration](#configuration))
+- `html` : simple html/css/js server
+- `whitelist-ip` : use directive not remote_ip to block all request that is not whitelisted client. First param is trusted IPs

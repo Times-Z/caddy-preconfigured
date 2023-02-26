@@ -50,8 +50,27 @@
 	encode zstd gzip
 }
 
-# Import and use configuration from snippet
-{$DOMAIN:localhost}:443 {
+(html) {
+	root * {$WEBROOT:/var/www/html}
+	file_server
+}
+
+(whitelist-ip) {
+	@client_ip not remote_ip {args.0}
+	respond @client_ip 403
+}
+
+(false) {
+
+}
+
+{$DOMAIN:localhost}:{$DOMAIN_PORT:443} {
+	import whitelist-ip {$WHITELIST_IPS:0.0.0.0/0}
+
 	import {$CADDY_MODE:reverse-proxy}
 	import {$TLS_PROVIDER:tls-ovh}
+
+	{$CADDY_DOMAIN_EXTRA_CONFIG}
 }
+
+{$CADDY_GLOBAL_EXTRA_CONFIG}
