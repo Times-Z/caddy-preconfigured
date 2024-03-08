@@ -20,7 +20,7 @@ LABEL maintainer="timesz<crashzeus@protonmail.com>"
 COPY --from=caddy-builder /build/caddy /usr/bin/caddy
 COPY ./Caddyfile /etc/caddy
 
-RUN apk add curl=7.83.1-r6 --no-cache \
+RUN apk add curl=8.5.0-r0 --no-cache \
     && mkdir -p /var/www/html \
     && adduser -u ${USER_ID} -D -S -G ${USER} ${USER} \
     && chown -R ${USER}:${USER} /etc/caddy /var/www/html /config /data
