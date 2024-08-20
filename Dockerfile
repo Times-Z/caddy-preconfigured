@@ -1,4 +1,4 @@
-ARG CADDY_VERSION=2.7.6
+ARG CADDY_VERSION=2.8.4
 
 
 FROM golang:alpine3.17 as caddy-builder
@@ -20,7 +20,7 @@ LABEL maintainer="timesz<crashzeus@protonmail.com>"
 COPY --from=caddy-builder /build/caddy /usr/bin/caddy
 COPY ./Caddyfile /etc/caddy
 
-RUN apk add curl=8.5.0-r0 --no-cache \
+RUN apk add curl=8.9.0-r0 --no-cache \
     && mkdir -p /var/www/html \
     && adduser -u ${USER_ID} -D -S -G ${USER} ${USER} \
     && chown -R ${USER}:${USER} /etc/caddy /var/www/html /config /data
