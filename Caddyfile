@@ -9,6 +9,8 @@
 # Refer to the Caddy docs for more information:
 # https://caddyserver.com/docs/caddyfile
 
+{$CADDY_GLOBAL_EXTRA_CONFIG}
+
 (tls-ovh) {
 	tls {
 		dns ovh {
@@ -72,5 +74,3 @@
 
 	{$CADDY_DOMAIN_EXTRA_CONFIG}
 }
-
-{$CADDY_GLOBAL_EXTRA_CONFIG}
