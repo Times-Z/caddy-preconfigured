@@ -8,7 +8,7 @@ build:docker:
     stage: build
     image: docker:stable
     services:
-      - name: docker:stable-dind-rootless
+      - name: docker:stable-dind
         alias: docker
     
     variables: 
