@@ -14,6 +14,7 @@ build:docker:
     variables: 
       DOCKER_HOST: tcp://docker:2376
       DOCKER_TLS_VERIFY: 0
+      DOCKER_TLS_DIR: ""
     script:
       - docker build -t "$CI_REGISTRY_IMAGE:stable" .
       - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
