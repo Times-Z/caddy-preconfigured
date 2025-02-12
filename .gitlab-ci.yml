@@ -63,7 +63,7 @@ deploy:github:
       if [ "$(git remote show | grep publicGithub)" == "" ] ; then
         git remote add publicGithub git@github.com:Times-Z/caddy-preconfigured.git
       fi
-      git push -u publicGithub HEAD:main
+      git push -f -u publicGithub HEAD:main
   only:
     - main
   when: manual

@@ -9,6 +9,8 @@
 # Refer to the Caddy docs for more information:
 # https://caddyserver.com/docs/caddyfile
 
+{$CADDY_GLOBAL_EXTRA_CONFIG}
+
 (tls-ovh) {
 	tls {
 		dns ovh {
@@ -46,7 +48,9 @@
 }
 
 (reverse-proxy) {
-	reverse_proxy {$BACKEND_ENDPOINT:nginx:80}
+	reverse_proxy {$BACKEND_ENDPOINT:nginx:80} {
+		trusted_proxies {$TRUSTED_PROXIES:172.19.0.0/16}
+	}
 }
 
 (php-fpm) {
@@ -78,5 +82,3 @@
 
 	{$CADDY_DOMAIN_EXTRA_CONFIG}
 }
-
-{$CADDY_GLOBAL_EXTRA_CONFIG}
