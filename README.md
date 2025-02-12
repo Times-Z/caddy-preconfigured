@@ -140,6 +140,8 @@ Availaible vars :
         - `AZURE_RESOURCE_GROUP_NAME`
     - Cloudflare :
         - `CLOUDFLARE_API_TOKEN`
+    - DuckDNS :
+        - `DUCK_DNS_TOKEN`
 
 
 ## [Examples](#Examples)
