@@ -39,6 +39,12 @@
 	}
 }
 
+(tls-duck) {
+	tls {
+		dns duckdns {$DUCK_DNS_TOKEN}
+	}
+}
+
 (reverse-proxy) {
 	reverse_proxy {$BACKEND_ENDPOINT:nginx:80}
 }

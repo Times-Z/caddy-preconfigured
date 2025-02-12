@@ -1,4 +1,4 @@
-ARG CADDY_VERSION=2.7.6
+ARG CADDY_VERSION=2.8.4
 
 
 FROM golang:alpine3.17 as caddy-builder
@@ -9,6 +9,7 @@ RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
         --with github.com/caddy-dns/ovh \
         --with github.com/caddy-dns/azure \
         --with github.com/caddy-dns/cloudflare \
+        --with github.com/caddy-dns/duckdns \
         --output /build/caddy
 
 FROM caddy:${CADDY_VERSION}-alpine
@@ -20,7 +21,7 @@ LABEL maintainer="timesz<crashzeus@protonmail.com>"
 COPY --from=caddy-builder /build/caddy /usr/bin/caddy
 COPY ./Caddyfile /etc/caddy
 
-RUN apk add curl=8.5.0-r0 --no-cache \
+RUN apk add curl~=8 --no-cache \
     && mkdir -p /var/www/html \
     && adduser -u ${USER_ID} -D -S -G ${USER} ${USER} \
     && chown -R ${USER}:${USER} /etc/caddy /var/www/html /config /data
