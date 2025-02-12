@@ -9,8 +9,6 @@ build:docker:
     image: docker:stable
     services:
       - name: docker:stable-dind
-        alias: docker
-    
     variables:
       DOCKER_HOST: tcp://docker:2376
       DOCKER_TLS_CERTDIR: "/certs"
