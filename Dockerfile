@@ -1,7 +1,6 @@
 ARG CADDY_VERSION=2.9.1
 
-
-FROM golang:latest as caddy-builder
+FROM golang:alpine3.19 as caddy-builder
 ARG CADDY_VERSION
 
 RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
