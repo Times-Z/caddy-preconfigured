@@ -7,8 +7,12 @@ stages:
 build:docker:
     stage: build
     image: docker:stable
+    services:
+      - name: docker:stable-dind
     variables:
-      DOCKER_HOST: "unix:///var/run/docker.sock"
+      DOCKER_HOST: tcp://docker:2375
+      DOCKER_TLS_VERIFY: ""
+      DOCKER_CERT_PATH: ""
     script:
       - docker build -t "$CI_REGISTRY_IMAGE:stable" .
       - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
