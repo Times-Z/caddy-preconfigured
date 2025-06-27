@@ -10,10 +10,9 @@ build:docker:
     services:
       - name: docker:stable-dind
     variables:
-      DOCKER_HOST: tcp://docker:2376
-      DOCKER_TLS_CERTDIR: "/certs"
-      DOCKER_TLS_VERIFY: 1
-      DOCKER_CERT_PATH: "/certs/client"
+      DOCKER_HOST: tcp://docker:2375
+      DOCKER_TLS_VERIFY: ""
+      DOCKER_CERT_PATH: ""
     script:
       - docker build -t "$CI_REGISTRY_IMAGE:stable" .
       - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
