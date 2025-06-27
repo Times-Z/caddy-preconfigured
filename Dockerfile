@@ -1,4 +1,4 @@
-ARG CADDY_VERSION=2.9.1
+ARG CADDY_VERSION=2.10.0
 
 FROM golang:alpine3.19 as caddy-builder
 ARG CADDY_VERSION
