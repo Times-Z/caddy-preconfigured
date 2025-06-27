@@ -10,7 +10,7 @@ build:docker:
     services:
       - name: docker:stable-dind
     variables:
-      DOCKER_TLS_CERTDIR: ""
+      DOCKER_HOST: unix:///var/run/docker.sock
     script:
       - docker build -t "$CI_REGISTRY_IMAGE:stable" .
       - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
