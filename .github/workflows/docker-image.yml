@@ -54,7 +54,7 @@ jobs:
       - build
     steps:
       - name: Scan image
-        uses: aquasecurity/trivy-action@0.34
+        uses: aquasecurity/trivy-action@0.34.1
         with:
           image-ref: ghcr.io/times-z/caddy-preconfigured/caddy:latest
           format: 'table'
