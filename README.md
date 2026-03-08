@@ -11,137 +11,73 @@ This repository is docker container of [caddy](https://caddyserver.com/) includi
 This is the fastest way to provide https protocol in your application ! 🚀✨
 
 ## [Configuration](#configuration)
-This docker image is configuratble by env vars
+This docker image is configurable by env vars.
 
-Availaible vars :
+### Available Variables
 
-- Global vars :
+#### Global Variables
 
-    - `DOMAIN` :
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `DOMAIN` | `localhost` | Your domain name such as `foo.bar.domain` |
+| `DOMAIN_PORT` | `443` | Listening port for your domain configuration |
+| `CADDY_MODE` | `reverse-proxy` | Default snippet used for configuration. Possible values: `reverse-proxy`, `php-fpm`, `html` or `false` (to disable) |
+| `CADDY_DOMAIN_EXTRA_CONFIG` | `null` | Custom extra config for domain scope. Use the syntax `{env.XXX}` instead of `{$XXX}` for environment variables. You can use snippets defined in Caddyfile (see [Snippet section](#defined-snippet)). Example: `header x-domain-from "{env.DOMAIN}"` |
+| `CADDY_GLOBAL_EXTRA_CONFIG` | `null` | Custom extra global configuration. Use the syntax `{env.XXX}` instead of `{$XXX}` for environment variables. You can use snippets defined in Caddyfile (see [Snippet section](#defined-snippet)). **Tip:** To provide multiline values in docker-compose.yml, use `\|` (not `>` as it doesn't add `\n` at line ends). Example: <br>`CADDY_GLOBAL_EXTRA_CONFIG: \|`<br>&nbsp;&nbsp;`localhost:80 {`<br>&nbsp;&nbsp;&nbsp;&nbsp;`respond "Hello, world!"`<br>&nbsp;&nbsp;`}` |
+| `TLS_PROVIDER` | `tls-ovh` | Your TLS provider. Possible values: `tls-ovh`, `tls-azure`, `tls-cloudflare` or `false` (to disable) |
+| `WHITELIST_IPS` | `0.0.0.0/0` | List of IP addresses or IP ranges to whitelist (space-separated). Returns 403 for requests not in scope. Examples: `127.0.0.1` (single IP) or `127.0.0.0/24` (IP range). Multiple values: `127.0.0.1 10.0.0.0/24` |
 
-        Default value is `localhost`
+#### Reverse Proxy Configuration
 
-        This is your domain name such as `foo.bar.domain`
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `BACKEND_ENDPOINT` | `nginx:80` | Endpoint to which requests are forwarded, such as `http://foo.bar:8000` or `wordpress:80` |
 
-    - `DOMAIN_PORT` :
+#### HTML Server Configuration
 
-        Default value is `443`
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `WEBROOT` | `/var/www/html` | Default web root for the web server |
 
-        Listening port for your domain configuration
+#### PHP-FPM Configuration
 
-    - `CADDY_MODE` : 
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `WEBROOT` | `/var/www/html` | Default web root for the web server |
+| `PHP_FASTCGI` | `php:9000` | PHP FastCGI backend address, such as `unix//run/php/php8.2-fpm.sock` (for socket) or `my-phpfpm-container:9000` (for container) |
 
-        Default value is `reverse-proxy`
+#### TLS Provider Variables
 
-        This is the default snippet used for configuration
+##### OVH
 
-        Possible value : `reverse-proxy`, `php-fpm`, `html` or `false` (to disable)
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `OVH_ENDPOINT` | `ovh-eu` | OVH API endpoint |
+| `OVH_APPLICATION_KEY` | - | OVH application key (required) |
+| `OVH_APPLICATION_SECRET` | - | OVH application secret (required) |
+| `OVH_CONSUMER_KEY` | - | OVH consumer key (required) |
 
-    - `CADDY_DOMAIN_EXTRA_CONFIG` :
+##### Azure
 
-        Default value is `nul`
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `AZURE_TENANT_ID` | - | Azure tenant ID (required) |
+| `AZURE_CLIENT_ID` | - | Azure client ID (required) |
+| `AZURE_CLIENT_SECRET` | - | Azure client secret (required) |
+| `AZURE_SUBSCRIPTION_ID` | - | Azure subscription ID (required) |
+| `AZURE_RESOURCE_GROUP_NAME` | - | Azure resource group name (required) |
 
-        Give caddy custom extra config for domain scope
+##### Cloudflare
 
-        Example :
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `CLOUDFLARE_API_TOKEN` | - | Cloudflare API token (required) |
 
-        ```sh
-          header x-domain-from "{env.DOMAIN}"
-        ```
+##### DuckDNS
 
-        Note: Use the syntaxe {env.XXX} instead of {$XXX} to use environnement variable for this block
-
-        You can use snippet that is defined in CaddyFile (view [Snippet section](#defined-snippet))
-
-    - `CADDY_GLOBAL_EXTRA_CONFIG` :
-
-        Default value is `null`
-
-        Give caddy custom extra global configuration such as
-
-        ```sh
-        localhost:80 {
-          respond "Hello, world!"
-        }
-        ```
-
-        Note: Use the syntaxe {env.XXX} instead of {$XXX} to use environnement variable for this block
-
-        Tips: to provide multiline value for a env var in a docker-compose.yml use "`|`" like
-        ```yml
-          CADDY_DOMAIN_EXTRA_CONFIG: |
-            localhost:80 {
-              respond "Hello, world!"
-            }
-        ```
-
-        Dot not use the `>` because he not add \n at the end of each line it cause some issues in many case
-
-        You can use snippet that is defined in CaddyFile (view [Snippet section](#defined-snippet))
-
-    - `TLS_PROVIDER` :
-
-        Default value is `tls-ovh`
-
-        The is your tls provider
-
-        Possible value : `tls-ovh`, `tls-azure`, `tls-cloudflare` or `false` (to disable)
-
-    - `WHITELIST_IPS` :
-
-      Default value is `0.0.0.0/0` (all ip and ip scope is allowed)
-
-      Provide a list of ip or ip range to whitelist
-
-      Give 403 return response for all request that is not in scope
-
-      You can provide ip like `127.0.0.1` or scope like `127.0.0.0/24`
-
-      You need to sperate each by space such as example `127.0.0.1 10.0.0.0/24`
-
-- Caddy reverse-proxy specific :
-    - `BACKEND_ENDPOINT` :
-
-        Default value is `nginx:80`
-
-        This is your endpoint to which requests are forwarded such as `http://foo.bar:8000` or `wordpress:80`
-
-- Caddy reverse-proxy specific :
-    - `WEBROOT` :
-
-        Default value is `/var/www/html`
-
-        Set the default web root for the web server
-
-- Caddy php-fpm specific :
-    - `WEBROOT` :
-
-        Default value is `/var/www/html`
-
-        Set the default web root for the web server
-
-    - `PHP_FASTCGI` : 
-
-        Default value is `php:9000`
-
-        This is your php fastcgi backend adress such as `unix//run/php/php8.2-fpm.sock` if running socket or `my-phpfpm-container:9000`
-
-- TLS provider specific :
-    - OVH :
-        - `OVH_ENDPOINT` : default `ovh-eu`
-        - `OVH_APPLICATION_KEY`
-        - `OVH_APPLICATION_SECRET`
-        - `OVH_CONSUMER_KEY`
-    - Azure :
-        - `AZURE_TENANT_ID`
-        - `AZURE_CLIENT_ID`
-        - `AZURE_CLIENT_SECRET`
-        - `AZURE_SUBSCRIPTION_ID`
-        - `AZURE_RESOURCE_GROUP_NAME`
-    - Cloudflare :
-        - `CLOUDFLARE_API_TOKEN`
-    - DuckDNS :
-        - `DUCK_DNS_TOKEN`
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `DUCK_DNS_TOKEN` | - | DuckDNS token (required) |
 
 
 ## [Examples](#Examples)
@@ -149,8 +85,6 @@ Availaible vars :
 This is an example to provide TLS for qbittorrent web application using reverse-proxy configuration with ip range or specific ip white list
 
 ```yml
-version: "3.8"
-
 services:
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -160,6 +94,7 @@ services:
       WEBUI_PORT: 8080
     networks:
       - proxy
+
   caddy:
     image: ghcr.io/times-z/caddy-preconfigured/caddy:latest
     container_name: caddy
@@ -188,8 +123,6 @@ volumes:
 
 This is an other example to provide a http server with https for my php-fpm container
 ```yml
-version: "3.8"
-
 services:
   application:
     image: php:8.1.16-fpm
