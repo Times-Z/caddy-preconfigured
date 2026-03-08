@@ -24,7 +24,7 @@ COPY --from=caddy-builder /build/caddy /usr/bin/caddy
 COPY ./Caddyfile /etc/caddy
 
 RUN set -xe; \
-    apk add curl~=8 --no-cache \
+    apk add curl~=8 zlib=1.3.2-r0 --no-cache \
     && mkdir -p /var/www/html \
     && adduser -u ${USER_ID} -D -S -G ${USER} ${USER} \
     && chown -R ${USER}:${USER} /etc/caddy /var/www/html /config /data
