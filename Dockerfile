@@ -1,6 +1,6 @@
-ARG CADDY_VERSION=2.11.2
+ARG CADDY_VERSION=2.11.4
 
-FROM golang:alpine3.23 AS caddy-builder
+FROM golang:alpine3.24 AS caddy-builder
 ARG CADDY_VERSION
 
 # hadolint global ignore=DL3062
