@@ -47,6 +47,12 @@
 	}
 }
 
+(tls-njalla) {
+	tls {
+		dns njalla {$NJALLA_API_TOKEN}
+	}
+}
+
 (reverse-proxy) {
 	reverse_proxy {$BACKEND_ENDPOINT:nginx:80} {
 		trusted_proxies {$TRUSTED_PROXIES:172.19.0.0/16}
