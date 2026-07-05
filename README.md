@@ -24,7 +24,7 @@ This docker image is configurable by env vars.
 | `CADDY_MODE` | `reverse-proxy` | Default snippet used for configuration. Possible values: `reverse-proxy`, `php-fpm`, `html` or `false` (to disable) |
 | `CADDY_DOMAIN_EXTRA_CONFIG` | `null` | Custom extra config for domain scope. Use the syntax `{env.XXX}` instead of `{$XXX}` for environment variables. You can use snippets defined in Caddyfile (see [Snippet section](#defined-snippet)). Example: `header x-domain-from "{env.DOMAIN}"` |
 | `CADDY_GLOBAL_EXTRA_CONFIG` | `null` | Custom extra global configuration. Use the syntax `{env.XXX}` instead of `{$XXX}` for environment variables. You can use snippets defined in Caddyfile (see [Snippet section](#defined-snippet)). **Tip:** To provide multiline values in docker-compose.yml, use `\|` (not `>` as it doesn't add `\n` at line ends). Example: <br>`CADDY_GLOBAL_EXTRA_CONFIG: \|`<br>&nbsp;&nbsp;`localhost:80 {`<br>&nbsp;&nbsp;&nbsp;&nbsp;`respond "Hello, world!"`<br>&nbsp;&nbsp;`}` |
-| `TLS_PROVIDER` | `tls-ovh` | Your TLS provider. Possible values: `tls-ovh`, `tls-azure`, `tls-cloudflare` or `false` (to disable) |
+| `TLS_PROVIDER` | `tls-ovh` | Your TLS provider. Possible values: `tls-ovh`, `tls-azure`, `tls-cloudflare`, `tls-njalla` or `false` (to disable) |
 | `WHITELIST_IPS` | `0.0.0.0/0` | List of IP addresses or IP ranges to whitelist (space-separated). Returns 403 for requests not in scope. Examples: `127.0.0.1` (single IP) or `127.0.0.0/24` (IP range). Multiple values: `127.0.0.1 10.0.0.0/24` |
 
 #### Reverse Proxy Configuration
@@ -78,6 +78,12 @@ This docker image is configurable by env vars.
 | Variable | Default Value | Description |
 |----------|---------------|-------------|
 | `DUCK_DNS_TOKEN` | - | DuckDNS token (required) |
+
+##### Njalla
+
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `NJALLA_API_TOKEN` | - | Njalla API token (required) |
 
 
 ## [Examples](#Examples)
@@ -166,6 +172,7 @@ volumes:
 - `tls-ovh` : use [caddy-dns/ovh](https://github.com/caddy-dns/ovh) plugin to provide TLS
 - `tls-cloudflare` : use [caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare) plugin to provide TLS
 - `tls-azure` : use [caddy-dns/azure](https://github.com/caddy-dns/azure) plugin to provide TLS
+- `tls-njalla` : use [caddy-dns/njalla](https://github.com/caddy-dns/njalla) plugin to provide TLS
 - `reverse-proxy` : use [reverse_proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy) directive to provide a simple reverse proxy to a backend wich defined with `BACKEND_ENDPOINT` environnement variable (see [configuration](#configuration))
 - `php-fpm` : provide a default configuration for php (see [configuration](#configuration))
 - `html` : simple html/css/js server
