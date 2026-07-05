@@ -50,6 +50,7 @@
 (tls-njalla) {
 	tls {
 		dns njalla {$NJALLA_API_TOKEN}
+		resolvers 1.1.1.1
 	}
 }
 
