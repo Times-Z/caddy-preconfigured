@@ -13,6 +13,7 @@ RUN set -xe; \
         --with github.com/caddy-dns/cloudflare \
         --with github.com/caddy-dns/duckdns \
         --with github.com/caddy-dns/njalla \
+        --with github.com/mholt/caddy-dynamicdns \
         --output /build/caddy
 
 FROM caddy:${CADDY_VERSION}-alpine
