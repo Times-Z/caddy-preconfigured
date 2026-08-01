@@ -6,17 +6,18 @@ stages:
 
 build:docker:
     stage: build
-    image: docker:rc
+    image: docker:27
     services:
-      - docker:dind
+      - docker:27-dind
     variables:
       DOCKER_HOST: tcp://docker:2376
       DOCKER_TLS_CERTDIR: "/certs"
       DOCKER_TLS_VERIFY: 1
       DOCKER_CERT_PATH: "/certs/client"
+      DOCKER_BUILDKIT: "1"
     script:
-      - docker build -t "$CI_REGISTRY_IMAGE:stable" .
       - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+      - docker build --pull --no-cache -t "$CI_REGISTRY_IMAGE:stable" .
       - docker push "$CI_REGISTRY_IMAGE:stable"
     only:
       - main
