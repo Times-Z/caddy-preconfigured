@@ -1,6 +1,6 @@
 ARG CADDY_VERSION=2.11.4
 
-FROM golang:alpine3.24 AS caddy-builder
+FROM golang:alpine3.24@sha256:cf6fca6641884b8433441b2b0652976f975e1d0fdd26d177eaaf8596087f3125 AS caddy-builder
 ARG CADDY_VERSION
 
 # hadolint global ignore=DL3062
@@ -17,7 +17,7 @@ RUN set -xe; \
         --with github.com/mholt/caddy-ratelimit \
         --output /build/caddy
 
-FROM caddy:${CADDY_VERSION}-alpine
+FROM caddy:${CADDY_VERSION}-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
 ARG USER=www-data
 ARG USER_ID=1001
 
