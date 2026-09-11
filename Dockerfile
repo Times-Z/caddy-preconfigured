@@ -14,6 +14,7 @@ RUN set -xe; \
         --with github.com/caddy-dns/duckdns \
         --with github.com/caddy-dns/njalla \
         --with github.com/mholt/caddy-dynamicdns \
+        --with github.com/mholt/caddy-ratelimit \
         --output /build/caddy
 
 FROM caddy:${CADDY_VERSION}-alpine
