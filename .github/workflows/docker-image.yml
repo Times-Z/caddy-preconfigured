@@ -1,7 +1,7 @@
 name: Build and Publish
 
 env:
-  IMAGE: ghcr.io/${{ lower(github.repository) }}/caddy
+  IMAGE: ghcr.io/${{ env.GITHUB_REPOSITORY }}/caddy
 
 on:
   push:
