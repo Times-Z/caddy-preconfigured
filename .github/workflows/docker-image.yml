@@ -31,8 +31,10 @@ jobs:
       - lint
     steps:
       - name: Set lower case image name
+        id: image_name
         run: |
-          echo "IMAGE=ghcr.io/${{ github.repository }}/caddy" | tr '[:upper:]' '[:lower:]' >> $GITHUB_ENV
+          IMAGE=$(echo "ghcr.io/${{ github.repository }}/caddy" | tr '[:upper:]' '[:lower:]')
+          echo "image=${IMAGE}" >> $GITHUB_OUTPUT
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -52,7 +54,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE }}:latest
+          tags: ${{ steps.image_name.outputs.image }}:latest
 
   trivy:
     name: Trivy Scan
@@ -63,7 +65,7 @@ jobs:
       - name: Scan image
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
-          image-ref: ${{ env.IMAGE }}:latest
+          image-ref: ${{ steps.image_name.outputs.image }}:latest
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
