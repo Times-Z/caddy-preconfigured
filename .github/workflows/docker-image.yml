@@ -62,6 +62,12 @@ jobs:
     needs:
       - build
     steps:
+      - name: Set lower case image name
+        id: image_name
+        run: |
+          IMAGE=$(echo "ghcr.io/${{ github.repository }}/caddy" | tr '[:upper:]' '[:lower:]')
+          echo "image=${IMAGE}" >> $GITHUB_OUTPUT
+
       - name: Scan image
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
